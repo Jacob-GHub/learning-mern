@@ -9,7 +9,7 @@ const {
 
 router.post("/links", createUrl);
 router.get("/links", getUrls);
-router.delete("links/:id", deleteUrl);
+router.delete("/links/:id", deleteUrl);
 router.get("/:slug", updateUrl);
 
 module.exports = router;

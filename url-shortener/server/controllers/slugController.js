@@ -25,14 +25,47 @@ const createUrl = async (req, res) => {
 
 const getUrls = async (req, res) => {
   // get url in mongodb
+  try {
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 20;
+    const skip = (page - 1) * limit;
+    const urls = await URL.find().skip(skip).limit(limit);
+
+    res.status(200).json(urls);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 const deleteUrl = async (req, res) => {
   // delete url in mongodb
+  try {
+    const deleted = await URL.findByIdAndDelete(req.params.id);
+
+    if (!deleted) {
+      return res.status(404).json({ error: "URL not found" });
+    }
+
+    res.status(200).json({ message: "URL deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 const updateUrl = async (req, res) => {
-  // update url in mongodb
+  try {
+    const url = await URL.findOneAndUpdate(
+      { slug: req.params.slug },
+      { $inc: { clicks: 1 } },
+      { new: true },
+    );
+    if (!url) {
+      return res.status(404).json({ error: "slug not found" });
+    }
+    res.status(302).json(url.longUrl);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 module.exports = {

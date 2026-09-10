@@ -8,11 +8,13 @@ const PORT = process.env.PORT || 5001;
 const DB_URI = process.env.MONGODB_URI;
 const url_routes = require("./routes/slugRoutes");
 const URL = require("./models/Slug");
+const { updateUrl } = require("./controllers/slugController");
 
 console.log("Mongo URI:", process.env.MONGODB_URI);
 app.use(express.json());
 
 app.use("/api", url_routes);
+app.get("/:slug", updateUrl);
 
 app.get("/api/health", (req, res) => {
   res.status(200).json({
@@ -25,7 +27,6 @@ const connectDB = async () => {
   try {
     await mongoose.connect(DB_URI);
     await URL.syncIndexes();
-
     console.log("✅ MongoDB connected successfully!");
   } catch (error) {
     console.error("❌ MongoDB connection error:", error.message);
