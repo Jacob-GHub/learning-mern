@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -12,6 +13,7 @@ const { updateUrl } = require("./controllers/slugController");
 
 console.log("Mongo URI:", process.env.MONGODB_URI);
 app.use(express.json());
+app.use(cors());
 
 app.use("/api", url_routes);
 app.get("/:slug", updateUrl);
